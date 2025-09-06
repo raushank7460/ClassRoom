@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spotify Web Player Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom Scrollbar for horizontal scroll container */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Transition for tabs */
+    .tab-item {
+      transition: background-color 0.3s ease;
+    }
+    /* Overlay fade for right end of horizontal scroll */
+    .fade-right::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 5rem;
+      height: 100%;
+      pointer-events: none;
+      background-image: linear-gradient(to left, rgb(44 37 12 / 0.85), transparent);
+    }
+    /* Icon background circles with hover */
+    .icon-button {
+      background-color: #181818;
+      transition: background-color 0.3s ease;
+    }
+    .icon-button:hover {
+      background-color: #282828;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-black font-sans text-white">
+  <!-- Top Navigation -->
+  <header class="flex items-center justify-between px-5 py-3 bg-black sticky top-0 z-40 border-b border-gray-800">
+    <div class="flex items-center space-x-5">
+      <button aria-label="Spotify Logo" class="hover:opacity-80 transition-opacity">
+        <svg height="32" role="img" viewBox="0 0 24 24" width="32" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12c0 6.6 5.4 12 12 12 6.6 0 12-5.4 12-12 0-6.6-5.4-12-12-12zm5.45 17.1a.75.75 0 0 1-1.04.24c-2.85-1.73-6.44-2.13-10-1.15a.75.75 0 1 1-.3-1.46c3.97-1.02 7.8-.56 10.77 1.3a.75.75 0 0 1 .57 1.07zm1.46-3.07a.94.94 0 0 1-1.3.29c-3.26-1.96-8.23-2.54-11.4-1.37a.94.94 0 0 1-.72-1.7c3.7-1.57 9.05-1.87 12.91 1.57a.94.94 0 0 1 .51 1.21zm.18-3.3a1.16 1.16 0 0 1-1.62.37c-3.72-2.22-9.95-2.87-13.02-1.54a1.16 1.16 0 1 1-.82-2.15c3.66-1.39 10.58-.6 14.6 1.78a1.16 1.16 0 0 1 .86 1.54z"/></svg>
+      </button>
+      <button aria-label="Home" class="icon-button p-3 rounded-full">
+        <svg height="24" width="24" fill="white" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+      </button>
+      <div class="relative flex items-center text-gray-400 bg-[#282828] rounded-full pl-4 pr-10 py-2 w-[400px] max-w-full">
+        <svg height="20" width="20" fill="white" viewBox="0 0 24 24" class="mr-2" aria-hidden="true"><path d="M21.53 20.47l-3.978-3.977a7.5 7.5 0 1 0-1.06 1.06l3.98 3.977a.75.75 0 0 0 1.058-1.06zM10.5 17a6.5 6.5 0 1 1 6.5-6.5 6.51 6.51 0 0 1-6.5 6.5z"></path></svg>
+        <input type="search" placeholder="What do you want to play?" class="bg-transparent outline-none text-white placeholder-gray-400 w-full text-sm" />
+        <div class="h-6 w-px bg-gray-600 mr-3 ml-3"></div>
+        <button aria-label="Queue" class="hover:brightness-125 transition">
+          <svg height="20" width="20" fill="white" viewBox="0 0 16 16" class="" aria-hidden="true"><path d="M1 9v2h5v-2H1Zm0-4v2h11V5H1Zm0 8v2h11v-2H1Zm14-8v2h-3V5h3Zm0 4v2h-3v-2h3Zm0 4v2h-3v-2h3Z"></path></svg>
+        </button>
+      </div>
+    </div>
+    <div class="flex items-center space-x-6 text-sm font-semibold text-gray-400 whitespace-nowrap">
+      <button class="rounded-full px-4 py-2 border border-white bg-white text-black font-bold hover:brightness-90 transition">Explore Premium</button>
+      <button class="flex items-center hover:brightness-125 transition gap-1"><svg height="16" width="16" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 11.5A4.5 4.5 0 0 0 12 7a4.5 4.5 0 0 0-4.5 4.5v1a5.5 5.5 0 0 1-3.5 5.18v1.57h15v-1.56a5.5 5.5 0 0 1-3.5-5.19v-1zM7 18v1H5v-1h2zm-2-7v3h2v-3H5z"/></svg>Install App</button>
+      <button aria-label="Notifications" class="icon-button rounded-full p-2 hover:brightness-125 transition">
+        <svg height="16" width="16" fill="white" viewBox="0 0 24 24"><path d="M12 22a2 2 0 0 0 2-2H10a2 2 0 0 0 2 2Zm6-6v-5a6 6 0 1 0-12 0v5L4 18h16l-2-2Z"/></svg>
+      </button>
+      <button aria-label="Social" class="icon-button rounded-full p-2 hover:brightness-125 transition">
+        <svg height="16" width="16" fill="white" viewBox="0 0 24 24"><path d="M17.5 6A2.5 2.5 0 1 1 20 8.5 2.5 2.5 0 0 1 17.5 6zM9 5a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3 3 3 0 0 0 3-3v-4a3 3 0 0 0-3-3ZM7 8a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0zM6 18a2 2 0 1 1 4 0h8a2 2 0 1 1 0 4H6a2 2 0 0 1 0-4Zm8.5-2a2.5 2.5 0 1 1 2.5 2.5 2.5 2.5 0 0 1-2.5-2.5Z"/></svg>
+      </button>
+      <button aria-label="User Profile" class="rounded-full bg-blue-700 w-8 h-8 flex items-center justify-center font-semibold text-lg text-white">R</button>
+    </div>
+  </header>
+
+  <main class="flex h-[calc(100vh-56px)] overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#121212] p-5 flex flex-col justify-start space-y-6 border-r border-gray-800">
+      <div class="flex items-center justify-between">
+        <h2 class="font-semibold text-white text-lg select-none">Your Library</h2>
+        <button aria-label="Add Playlist" class="icon-button p-2 rounded-full">
+          <svg height="20" width="20" fill="white" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 11v2h-6v6h-2v-6H5v-2h6V5h2v6h6Z"></path></svg>
+        </button>
+      </div>
+
+      <!-- Create first playlist box -->
+      <div class="bg-[#181818] rounded-lg p-5 max-w-[250px]">
+        <h3 class="font-bold mb-2">Create your first playlist</h3>
+        <p class="text-gray-400 text-sm mb-4">It’s easy, we’ll help you</p>
+        <button class="bg-white text-black rounded-full px-5 py-3 font-semibold hover:bg-gray-200 transition w-full text-center">Create playlist</button>
+      </div>
+
+      <!-- Find podcasts box -->
+      <div class="bg-[#181818] rounded-lg p-5 max-w-[250px]">
+        <h3 class="font-bold mb-2">Let’s find some podcasts to follow</h3>
+        <p class="text-gray-400 text-sm mb-4">We’ll keep you updated on new episodes</p>
+        <button class="bg-white text-black rounded-full px-5 py-3 font-semibold hover:bg-gray-200 transition w-full text-center">Browse podcasts</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <section class="flex-1 bg-gradient-to-b from-[#4f4007] to-[#1a0f01] p-5 overflow-y-auto">
+      <!-- Filter Tabs -->
+      <div class="flex space-x-3 mb-4">
+        <button aria-selected="true" type="button" class="tab-item bg-white text-black rounded-full text-sm px-5 py-2 font-semibold">All</button>
+        <button type="button" class="tab-item bg-[#6e5620] text-white rounded-full text-sm px-5 py-2 font-semibold">Music</button>
+        <button type="button" class="tab-item bg-[#6e5620] text-white rounded-full text-sm px-5 py-2 font-semibold">Podcasts</button>
+      </div>
+
+      <!-- Mini Playlists Row -->
+      <div class="flex space-x-3 mb-6 max-w-full overflow-x-auto relative scrollbar-hide fade-right" aria-label="Mini playlist categories">
+        <div class="bg-[#6e5620] rounded-md text-white flex items-center space-x-3 px-4 py-2 min-w-[180px] cursor-pointer no-select">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0fbf0bcb-0e08-440b-8d36-d61b8c2e1144.png" alt="Album cover of I-Pop Icons showing a man with a beard in yellow outfit" class="rounded-sm w-14 h-14 flex-shrink-0" />
+          <span class="font-semibold whitespace-nowrap">I-Pop Icons</span>
+        </div>
+        <div class="bg-[#6e5620] rounded-md text-white flex items-center space-x-3 px-4 py-2 min-w-[180px] cursor-pointer no-select">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1853e1af-1b6e-4a41-9d21-2fba71550146.png" alt="Album cover of Hot Hits Hindi showing a man and woman embracing outdoors" class="rounded-sm w-14 h-14 flex-shrink-0" />
+          <span class="font-semibold whitespace-nowrap">Hot Hits Hindi</span>
+        </div>
+      </div>
+
+      <!-- Editor's Pick Header -->
+      <div class="flex justify-between mb-3 items-center">
+        <h2 class="text-xl font-bold select-none">Editor's Pick</h2>
+        <button class="text-gray-400 font-semibold hover:underline">Show all</button>
+      </div>
+
+      <!-- Editor's Pick Cards -->
+      <div class="flex space-x-5 overflow-x-auto scrollbar-hide fade-right">
+        <!-- Card 1 -->
+        <article class="min-w-[180px] max-w-[180px] bg-[#181818] rounded-lg overflow-hidden shrink-0 cursor-pointer hover:bg-[#282828] transition">
+          <div class="relative aspect-square">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/77f46007-a720-44e0-8cf0-cc97415b52ce.png" alt="Romantic Bollywood couple, man and woman smiling closely, retro styling" class="object-cover w-full h-full" />
+            <div class="absolute top-2 left-2 bg-[#1db954] rounded-full p-1 w-6 h-6 flex justify-center items-center shadow-lg">
+              <svg height="12" width="12" fill="white" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12c0 6.6 5.4 12 12 12 6.6 0 12-5.4 12-12 0-6.6-5.4-12-12-12z"/></svg>
+            </div>
+          </div>
+          <div class="p-2">
+            <h3 class="font-semibold mb-1 text-white">Bollywood songs that ruled hearts in the...</h3>
+            <p class="text-gray-400 text-sm select-none">Bollywood songs that ruled hearts in the...</p>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="min-w-[180px] max-w-[180px] bg-[#181818] rounded-lg overflow-hidden shrink-0 cursor-pointer hover:bg-[#282828] transition">
+          <div class="relative aspect-square">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1450c91e-c05f-4f15-8bc9-418972e66834.png" alt="Bollywood couple dancing gently in natural green background with yellow sari" class="object-cover w-full h-full" />
+            <div class="absolute top-2 left-2 bg-[#1db954] rounded-full p-1 w-6 h-6 flex justify-center items-center shadow-lg">
+              <svg height="12" width="12" fill="white" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12c0 6.6 5.4 12 12 12 6.6 0 12-5.4 12-12 0-6.6-5.4-12-12-12z"/></svg>
+            </div>
+          </div>
+          <div class="p-2">
+            <h3 class="font-semibold mb-1 text-white">Sit back, and chill with Bollywood's...</h3>
+            <p class="text-gray-400 text-sm select-none">Sit back, and chill with Bollywood's...</p>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="min-w-[180px] max-w-[180px] bg-[#181818] rounded-lg overflow-hidden shrink-0 cursor-pointer hover:bg-[#282828] transition">
+          <div class="relative aspect-square">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/3e7064d7-b1fc-46e9-a3d4-a73a0ca6af57.png" alt="Woman in black dress looking down pensively, moody lighting" class="object-cover w-full h-full" />
+            <div class="absolute top-2 left-2 bg-[#1db954] rounded-full p-1 w-6 h-6 flex justify-center items-center shadow-lg">
+              <svg height="12" width="12" fill="white" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12c0 6.6 5.4 12 12 12 6.6 0 12-5.4 12-12 0-6.6-5.4-12-12-12z"/></svg>
+            </div>
+          </div>
+          <div class="p-2">
+            <h3 class="font-semibold mb-1 text-white">Late night cool, & these soothing tunes.</h3>
+            <p class="text-gray-400 text-sm select-none">Late night cool, & these soothing tunes.</p>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="min-w-[180px] max-w-[180px] bg-[#181818] rounded-lg overflow-hidden shrink-0 cursor-pointer hover:bg-[#282828] transition">
+          <div class="relative aspect-square">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d7a5fe63-c225-42d1-aa9f-00610e173796.png's+Hits+Couple" alt="Couple holding foreheads together in snowy background, cozy" class="object-cover w-full h-full" />
+            <div class="absolute top-2 left-2 bg-[#1db954] rounded-full p-1 w-6 h-6 flex justify-center items-center shadow-lg">
+              <svg height="12" width="12" fill="white" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12c0 6.6 5.4 12 12 12 6.6 0 12-5.4 12-12 0-6.6-5.4-12-12-12z"/></svg>
+            </div>
+          </div>
+          <div class="p-2">
+            <h3 class="font-semibold mb-1 text-white">India's ultimate love playlist Cover -</h3>
+            <p class="text-gray-400 text-sm select-none">India's ultimate love playlist Cover -</p>
+          </div>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="min-w-[180px] max-w-[180px] bg-[#181818] rounded-lg overflow-hidden shrink-0 cursor-pointer hover:bg-[#282828] transition">
+          <div class="relative aspect-square">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1bc5965d-a3ba-411e-8b46-b20d8a2d88e4.png" alt="Happy Bollywood couple smiling in white and gold, yellow background" class="object-cover w-full h-full" />
+            <div class="absolute top-2 left-2 bg-[#1db954] rounded-full p-1 w-6 h-6 flex justify-center items-center shadow-lg">
+              <svg height="12" width="12" fill="white" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12c0 6.6 5.4 12 12 12 6.6 0 12-5.4 12-12 0-6.6-5.4-12-12-12z"/></svg>
+            </div>
+          </div>
+          <div class="p-2">
+            <h3 class="font-semibold mb-1 text-white">Relive the biggest tracks of the decade.</h3>
+            <p class="text-gray-400 text-sm select-none">Relive the biggest tracks of the decade.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
+
